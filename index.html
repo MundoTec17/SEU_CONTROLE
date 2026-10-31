@@ -1136,24 +1136,36 @@ const imagensBannerMobile = [
          BANNER PRINCIPAL - RESPONSIVO
     ====================================================== -->
 
-    <div class="relative w-full mb-6 overflow-hidden rounded-2xl border border-blue-500/40 bg-gray-900 shadow-xl">
+    <div class="relative w-full mb-6 overflow-hidden rounded-2xl border border-blue-500/40 shadow-xl"
+style="background: radial-gradient(ellipse at 80% 50%, rgba(249,115,22,.22), transparent 48%), radial-gradient(ellipse at 20% 50%, rgba(30,64,175,.20), transparent 52%), #0b1220;">
 
-      <img
-      <picture>
-  <!-- Versão mobile -->
-  <source
-    media="(max-width: 767px)"
-    id="bannerInicialFonteMobile"
-    srcset="${imagensBannerMobile[bannerInicialAtual]}"
-  >
-
-  <!-- Versão desktop -->
-  <img
-    id="bannerInicialImagem"
+     <!-- FUNDO DO BANNER: IMAGEM AMPLIADA E DESFOCADA -->
+<img
+    id="bannerInicialFundo"
     src="${imagensBanner[bannerInicialAtual]}"
-    alt="SEU CONTROLE - Organização e crescimento empresarial"
-    class="block w-full h-[190px] sm:h-[260px] lg:h-[320px] object-cover"
-  >
+    aria-hidden="true"
+    class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110"
+>
+
+<!-- IMAGEM PRINCIPAL DO BANNER -->
+<picture class="relative z-10 block w-full">
+
+    <!-- VERSÃO MOBILE -->
+    <source
+        media="(max-width: 767px)"
+        id="bannerInicialFonteMobile"
+        srcset="${imagensBannerMobile[bannerInicialAtual]}"
+    >
+
+    <!-- VERSÃO DESKTOP -->
+    <img
+        id="bannerInicialImagem"
+        src="${imagensBanner[bannerInicialAtual]}"
+        alt="SEU CONTROLE - Organização e crescimento empresarial"
+        class="block w-full h-auto sm:h-[260px] lg:h-[320px] mx-auto object-contain scale-150"
+        style="mask-image: radial-gradient(ellipse at center, black 86%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse at center, black 86%, transparent 100%);"
+    >
+
 </picture>
 
       <!-- INDICADORES DOS BANNERS -->
