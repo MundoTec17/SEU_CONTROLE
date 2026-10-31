@@ -956,13 +956,48 @@ function renderServicos(c){
 
 // Controle da imagem atual do banner
 let bannerInicialAtual = 0;
+// =====================================================
+// TEMPORIZADOR DA ROTAÇÃO AUTOMÁTICA DOS BANNERS
+// =====================================================
+
+let bannerInicialTimer = null;
 
 // =====================================================
 // FUNÇÃO PARA EXIBIR A TELA INICIAL
 // =====================================================
 
 function renderTelaInicial(c){
+// =====================================================
+// ROTAÇÃO AUTOMÁTICA DOS BANNERS - 5 SEGUNDOS
+// =====================================================
 
+// =====================================================
+// ROTAÇÃO AUTOMÁTICA DOS BANNERS - 10 SEGUNDOS
+// =====================================================
+
+function iniciarRotacaoBanner(){
+
+  clearInterval(bannerInicialTimer);
+
+  bannerInicialTimer = setInterval(() => {
+
+    if(!document.getElementById("bannerInicialImagem")){
+      clearInterval(bannerInicialTimer);
+      return;
+    }
+
+    bannerInicialAtual++;
+
+    if(bannerInicialAtual >= 3){
+      bannerInicialAtual = 0;
+    }
+
+    // Atualiza somente a imagem e os indicadores
+    atualizarBannerInicial();
+
+  }, 10000);
+
+}
   const imagensBanner = [
     "imagens/banner-01-crescimento.png",
     "imagens/banner-02-produtividade.png",
@@ -974,6 +1009,9 @@ function renderTelaInicial(c){
     <!-- =====================================================
          BANNER PRINCIPAL
     ====================================================== -->
+    <!-- =====================================================
+         BANNER PRINCIPAL - RESPONSIVO
+    ====================================================== -->
 
     <div class="relative w-full mb-6 overflow-hidden rounded-2xl border border-blue-500/40 bg-gray-900 shadow-xl">
 
@@ -981,34 +1019,37 @@ function renderTelaInicial(c){
         id="bannerInicialImagem"
         src="${imagensBanner[bannerInicialAtual]}"
         alt="SEU CONTROLE - Organização e crescimento empresarial"
-       class="block w-full h-[190px] sm:h-[220px] lg:h-[280px] object-cover object-center"
+        class="block w-full h-auto object-contain"
       >
 
-      <!-- SETAS DE NAVEGAÇÃO -->
+      <!-- SETA PARA O BANNER ANTERIOR -->
 
       <button
         onclick="mudarBannerInicial(-1)"
-        class="absolute right-16 bottom-4 w-10 h-10 rounded-full bg-gray-950/80 hover:bg-blue-600 text-white border border-white/20 transition flex items-center justify-center"
+        class="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur-sm text-white border border-white/25 opacity-75 hover:opacity-100 transition flex items-center justify-center"
         aria-label="Banner anterior"
       >
         <i class="fas fa-chevron-left"></i>
       </button>
 
+      <!-- SETA PARA O PRÓXIMO BANNER -->
+
       <button
         onclick="mudarBannerInicial(1)"
-        class="absolute right-4 bottom-4 w-10 h-10 rounded-full bg-gray-950/80 hover:bg-blue-600 text-white border border-white/20 transition flex items-center justify-center"
+        class="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/15 hover:bg-white/30 backdrop-blur-sm text-white border border-white/25 opacity-75 hover:opacity-100 transition flex items-center justify-center"
         aria-label="Próximo banner"
       >
         <i class="fas fa-chevron-right"></i>
       </button>
 
-      <!-- INDICADORES -->
+      <!-- INDICADORES DOS BANNERS -->
 
-      <div class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+      <div id="bannerIndicadores" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
 
         ${imagensBanner.map((img, i) => `
           <button
             onclick="selecionarBannerInicial(${i})"
+            data-banner-indice="${i}"
             class="w-2.5 h-2.5 rounded-full border border-white/70 transition ${i === bannerInicialAtual ? 'bg-orange-400 scale-125' : 'bg-gray-500/70'}"
             aria-label="Selecionar banner ${i + 1}"
           ></button>
@@ -1017,7 +1058,6 @@ function renderTelaInicial(c){
       </div>
 
     </div>
-
 
     <!-- =====================================================
          MÓDULOS PRINCIPAIS
@@ -1287,15 +1327,45 @@ function renderTelaInicial(c){
 
           <i class="fas fa-arrow-right text-white text-lg"></i>
 
-        </div>
-
-      </div>
-
-    </div>
+            </div>
 
   `;
+
+  // Inicia a rotação automática dos banners
+  iniciarRotacaoBanner();
+// =====================================================
+// ATUALIZAR BANNER SEM RECARREGAR A TELA
+// =====================================================
+
+function atualizarBannerInicial(){
+
+  const imagem = document.getElementById("bannerInicialImagem");
+
+  if(!imagem) return;
+
+  const imagens = [
+    "imagens/banner-01-crescimento.png",
+    "imagens/banner-02-produtividade.png",
+    "imagens/banner-03-acesso-multiplataforma.png"
+  ];
+
+  imagem.src = imagens[bannerInicialAtual];
+
+  const indicadores = document.querySelectorAll("[data-banner-indice]");
+
+  indicadores.forEach(botao => {
+
+    const ativo = Number(botao.dataset.bannerIndice) === bannerInicialAtual;
+
+    botao.classList.toggle("bg-orange-400", ativo);
+    botao.classList.toggle("scale-125", ativo);
+    botao.classList.toggle("bg-gray-500/70", !ativo);
+
+  });
+
 }
 
+}
 
 // =====================================================
 // NAVEGAÇÃO MANUAL DOS BANNERS
@@ -1313,7 +1383,8 @@ function mudarBannerInicial(direcao){
     bannerInicialAtual = 0;
   }
 
-  renderApp();
+  atualizarBannerInicial();
+  iniciarRotacaoBanner();
 
 }
 
@@ -1326,7 +1397,8 @@ function selecionarBannerInicial(indice){
 
   bannerInicialAtual = indice;
 
-  renderApp();
+  atualizarBannerInicial();
+  iniciarRotacaoBanner();
 
 }
 // =====================================================
